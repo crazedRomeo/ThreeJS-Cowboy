@@ -51,10 +51,10 @@
 				scene = new THREE.Scene();
 				clock = new THREE.Clock();
 
-				new RGBELoader().load( 'royal_esplanade_1k.hdr', function ( texture ) {
+				new RGBELoader().load( 'royal_esplanade_1k_.hdr', function ( texture ) {
 					texture.mapping = THREE.EquirectangularReflectionMapping;
 
-					// scene.background = texture;
+					scene.background = texture;
 					scene.environment = texture;
 
 					// render();
@@ -71,6 +71,21 @@
 						object = gltf.scene;
 
 						scene.add( object );
+
+						// const al = new THREE.AmbientLight(0xffffff, 0.7);
+						// scene.add( al );
+						// var light = new THREE.HemisphereLight(0xffffff, 0x0000ff, 1);
+						// scene.add( light );
+						const dl = new THREE.DirectionalLight(0xffffff, 2.5);
+						dl.position.set(25, 50, -25);
+						scene.add(dl);
+						// scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+						// const mesh1 = new THREE.Mesh(
+						// 	new THREE.SphereGeometry(0.5),
+						// 	new THREE.MeshStandardMaterial( { color: new THREE.Color('yellow') } )
+						// );
+						// scene.add(mesh1);
 
 						// render();
 
@@ -99,6 +114,9 @@
 
 				} );
 
+				// const al = new THREE.AmbientLight(0x00000000, 1);
+				// scene.add( al );
+
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -110,7 +128,9 @@
 				controls.addEventListener( 'change', render ); // use if there is no animation loop
 				controls.minDistance = 8;
 				controls.maxDistance = 20;
-				controls.target.set( 0, 0, 0 );
+				controls.minPolarAngle = 0; // default
+				controls.maxPolarAngle = Math.PI / 2; // default
+				controls.target.set( 0, 2, 0 );
 				controls.update();
 
 				window.addEventListener( 'resize', onWindowResize );

@@ -66,7 +66,7 @@
 					env_loader = new GLTFLoader();
 					env_loader.setDRACOLoader( dracoLoader );
 
-					env_loader.load( 'env.glb', function ( gltf ) {
+					env_loader.load( './model/env.glb', function ( gltf ) {
 
 						object = gltf.scene;
 
@@ -79,7 +79,7 @@
 					const cowboy_loader = new GLTFLoader();					
 					cowboy_loader.setDRACOLoader( dracoLoader );
 
-					cowboy_loader.load( 'cowboyhorse.gltf', function ( gltf ) {
+					cowboy_loader.load( './model/cowboyhorse.gltf', function ( gltf ) {
 
 						object1 = gltf.scene;
 
@@ -94,15 +94,6 @@
 							mixer.clipAction( clip ).play();
 
 						} );
-
-						// object.position.setZ(posZ);
-						// console.log("render=", posZ);
-
-						// object.scale.set( 2, 2, 2 );
-						// object.rotation.y = 37.0;
-						// object.position.x = -10;                  //Position (x = right+ left-)
-						// object.position.y = -5;                 //Position (y = up+, down-)
-						// object.position.z = -15;
 
 					} );
 
@@ -142,10 +133,11 @@
 				requestAnimationFrame( animate );
 
 				posZ -= 0.2;
-				if ( posZ < -40)
+				if ( posZ < -40 )
 					posZ = 80;
-				object.position.setZ(posZ);
-				// camera.position.setZ(posZ - 4.5);
+
+				if ( object !== undefined && object.position !== undefined )
+					object.position.setZ(posZ);
 				
 				var delta = clock.getDelta();
 				

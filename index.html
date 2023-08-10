@@ -8,6 +8,35 @@
 	</head>
 
 	<body>
+		<div class="wrapper">
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
 		<div id="info">
 			<a href="#" target="_blank" rel="noopener">three.js</a> - Cowboy<br />
 		</div>
@@ -87,7 +116,7 @@
 				start: 0,
 				end: 101,
 				func: () => {
-					if ( object1 !== undefined) {
+					if ( object !== undefined ) {
 						boom.rotation.y = lerp(0, 4, scalePercent(1, 100));
 					}
 				},
@@ -98,7 +127,7 @@
 				start: 0,
 				end: 20,
 				func: () => {
-					if ( object1 !== undefined) {
+					if ( object !== undefined ) {
 					}
 				},
 			})
@@ -108,7 +137,7 @@
 				start: 20,
 				end: 30,
 				func: () => {
-					if ( object1 !== undefined) {
+					if ( object !== undefined ) {
 						$(".left_section").eq(0).css('opacity', 1 - lerp(0, 1, scalePercent(20, 30)));
 					}
 				},
@@ -119,7 +148,7 @@
 				start: 40,
 				end: 50,
 				func: () => {
-					if ( object1 !== undefined) {
+					if ( object !== undefined ) {
 						$(".left_section").eq(1).css('opacity', 1 - lerp(0, 1, scalePercent(40, 50)));
 					}
 				},
@@ -130,7 +159,7 @@
 				start: 60,
 				end: 70,
 				func: () => {
-					if ( object1 !== undefined) {
+					if ( object !== undefined ) {
 						$(".left_section").eq(2).css('opacity', 1 - lerp(0, 1, scalePercent(60, 70)));
 					}
 				},
@@ -141,7 +170,7 @@
 				start: 80,
 				end: 90,
 				func: () => {
-					if ( object1 !== undefined) {
+					if ( object !== undefined ) {
 						$(".right_section").eq(0).css('opacity', 1 - lerp(0, 1, scalePercent(80, 90)));
 					}
 				},
@@ -159,6 +188,7 @@
 			function init() {
 
 				const container = document.createElement( 'div' );
+				container.style.display = "none";
 				document.body.appendChild( container );
 
 				boom = new THREE.Group();
@@ -172,7 +202,7 @@
 
 				scene.add(boom);
 
-				new RGBELoader().load( 'royal_esplanade_2k_.hdr', function ( texture ) {
+				new RGBELoader().load( 'royal_esplanade_1k.hdr', function ( texture ) {
 					texture.mapping = THREE.EquirectangularReflectionMapping;
 
 					scene.background = texture;
@@ -187,7 +217,9 @@
 					env_loader = new GLTFLoader();
 					env_loader.setDRACOLoader( dracoLoader );
 
-					env_loader.load( './model/env.glb', function ( gltf ) {
+					env_loader.load( './model/env.gltf', function ( gltf ) {
+						container.style.display = "block";
+						$('.wrapper').addClass('hide');
 
 						object = gltf.scene;
 
@@ -201,16 +233,22 @@
 						// dl.position.set(25, 50, 25);
 						// scene.add(dl);
 						// scene.add(new THREE.AmbientLight(0xffffff, 1));
-
+						// console.log(object);
+						// console.log(gltf.animations);
 						mixer = new THREE.AnimationMixer( object );
-						mixer.timeScale = 0.05 ;
+						mixer.clipAction( gltf.animations[1] ).play();
 
-						gltf.animations.forEach( ( clip ) => {
+						// gltf.animations[1].forEach( ( clip ) => {
+						// 	mixer.clipAction( clip ).play();
+						// } );
 
-							mixer.clipAction( clip ).play();
+						mixer1 = new THREE.AnimationMixer( object );
+						mixer1.timeScale = 0.05 ;
+						mixer1.clipAction( gltf.animations[4] ).play();
 
-						} );
-
+						// gltf.animations[4].forEach( ( clip ) => {
+						// 	mixer.clipAction( clip ).play();
+						// } );
 					} );
 
 					title_loader = new GLTFLoader();
@@ -222,26 +260,26 @@
 						scene.add( gltf.scene );
 					} );
 
-					cowboy_loader = new GLTFLoader();
-					cowboy_loader.setDRACOLoader( dracoLoader );
+					// cowboy_loader = new GLTFLoader();
+					// cowboy_loader.setDRACOLoader( dracoLoader );
 
-					cowboy_loader.load( './model/cowboyhorse.gltf', function ( gltf ) {
+					// cowboy_loader.load( './model/cowboyhorse.gltf', function ( gltf ) {
 
-						object1 = gltf.scene;
+					// 	object1 = gltf.scene;
 
-						scene.add( object1 );
+					// 	scene.add( object1 );
 
-						// render();
+					// 	// render();
 
-						mixer1 = new THREE.AnimationMixer( object1 );
+					// 	mixer1 = new THREE.AnimationMixer( object1 );
 
-						gltf.animations.forEach( ( clip ) => {
+					// 	gltf.animations.forEach( ( clip ) => {
 
-							mixer1.clipAction( clip ).play();
+					// 		mixer1.clipAction( clip ).play();
 
-						} );
+					// 	} );
 
-					} );
+					// } );
 
 				} );
 

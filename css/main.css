@@ -1,11 +1,14 @@
 body {
 	margin: 0;
+	padding: 0;
 	background-color: #000;
 	color: #fff;
 	font-family: Monospace;
 	font-size: 13px;
 	line-height: 24px;
-	overscroll-behavior: none;
+	/* overscroll-behavior: none; */
+	overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 a {
@@ -88,4 +91,42 @@ a, button, input, select {
 	background-color: #f00;
 	margin-top: 20px;
 	padding: 10px;
+}
+
+canvas {
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+main {
+	width: 100vw;
+	height: 200vw;
+	z-index: 99;
+	position: absolute;
+	justify-content: center;
+	pointer-events: none;
+	font-size: 5vh;
+}
+
+section {
+	min-height: 100vh;
+	font-size: 30px;
+	line-height: 35px;
+}
+
+.back_section {
+	min-height: 60vh;
+	position: fixed;
+}
+
+.left_section {
+	text-align: left;
+	padding-left: 7%;
+	opacity: 0;
+}
+
+.right_section {
+	text-align: right;
+	padding-right: 7%;
 }

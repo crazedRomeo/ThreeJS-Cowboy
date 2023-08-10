@@ -11,10 +11,50 @@
 		<div id="info">
 			<a href="#" target="_blank" rel="noopener">three.js</a> - Cowboy<br />
 		</div>
+		<main>
+			<section class="back_section">
+			</section>
+			<section>
+			</section>
+			<section>
+			</section>
+			<section class="left_section">
+				<p>
+					SINCE THE BEGINNING,<br/>
+					WE'VE BEEN DRIVEN<br/>
+					TO EXPLORE
+				</p>
+			</section>
+
+			<section class="left_section">
+				<p>
+					CALLED BY THE<br/>
+					OPEN ROAD, AND THE<br/>
+					SPIRIT OF ADVENTURE
+				</p>
+			</section>
+
+			<section class="left_section">
+				<p>
+					TO SEEK THE THRILL<br/>
+					OF HEADING INTO<br/>
+					THE UNKNOWN
+				</p>
+			</section>
+
+			<section class="right_section">
+				<p>
+					BUT TO GO WHERE WE WANT<br/>
+					TO GO NEXT, WE NEED A<br/>
+					NEW KIND OF FUEL
+				</p>
+			</section>
+		</main>
 
 		<!-- Import maps polyfill -->
 		<!-- Remove this when import maps will be widely supported -->
 		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+		<script src="./js/jquery-3.7.0.min.js"></script>
 
 		<script type="importmap">
 			{
@@ -33,23 +73,137 @@
 			import { DRACOLoader } from './js/DRACOLoader.js';
 			import { RGBELoader } from './js/RGBELoader.js';
 
-			var camera, scene, renderer, mixer, clock, env_loader;
+			var controls, boom;
+			var camera, scene, renderer, mixer, mixer1, clock, env_loader, cowboy_loader, title_loader;
 			var posZ = 90;
 			var object, object1;
+			let scrollPercent = 0;
+
+			// const animationScripts: { start: number; end: number; func: () => void }[] = []
+			var animationScripts = [];
+
+			//add an animation that flashes the cube through 100 percent of scroll
+			animationScripts.push({
+				start: 0,
+				end: 101,
+				func: () => {
+					if ( object1 !== undefined) {
+						boom.rotation.y = lerp(0, 4, scalePercent(1, 100));
+					}
+				},
+			})
+
+			//add an animation that moves the cube through first 40 percent of scroll
+			animationScripts.push({
+				start: 0,
+				end: 20,
+				func: () => {
+					// camera.lookAt(cube.position)
+					//camera.position.set(0, 1, 2)
+					// cube.position.z = lerp(-10, 0, scalePercent(0, 40))
+					//console.log(cube.position.z)
+					if ( object1 !== undefined) {
+						// console.log("cowboy=>", object1.position);
+						// camera.lookAt(object1.position);
+						console.log("1");
+					}
+				},
+			})
+
+			//add an animation that rotates the cube between 40-60 percent of scroll
+			animationScripts.push({
+				start: 20,
+				end: 30,
+				func: () => {
+					// camera.lookAt(cube.position)
+					//camera.position.set(0, 1, 2)
+					// cube.rotation.z = lerp(0, Math.PI, scalePercent(40, 60))
+					//console.log(cube.rotation.z)
+					if ( object1 !== undefined) {
+						// console.log("cowboy=>", object1.position);
+						// camera.lookAt(object1.position);
+						console.log("2");
+						$(".left_section").eq(0).css('opacity', 1 - lerp(0, 1, scalePercent(20, 30)));
+					}
+				},
+			})
+
+			//add an animation that moves the camera between 60-80 percent of scroll
+			animationScripts.push({
+				start: 40,
+				end: 50,
+				func: () => {
+					// camera.position.x = lerp(0, 5, scalePercent(60, 80))
+					// camera.position.y = lerp(1, 5, scalePercent(60, 80))
+					// camera.lookAt(cube.position)
+					//console.log(camera.position.x + " " + camera.position.y)
+					if ( object1 !== undefined) {
+						// console.log("cowboy=>", object1.position);
+						// camera.lookAt(object1.position);
+						console.log("3");
+						$(".left_section").eq(1).css('opacity', 1 - lerp(0, 1, scalePercent(40, 50)));
+					}
+				},
+			})
+
+			//add an animation that auto rotates the cube from 80 percent of scroll
+			animationScripts.push({
+				start: 60,
+				end: 70,
+				func: () => {
+					//auto rotate
+					// cube.rotation.x += 0.01
+					// cube.rotation.y += 0.01
+					if ( object1 !== undefined) {
+						// console.log("cowboy=>", object1.position);
+						// camera.lookAt(object1.position);
+						console.log("4");
+						$(".left_section").eq(2).css('opacity', 1 - lerp(0, 1, scalePercent(60, 70)));
+					}
+				},
+			})
+
+			//add an animation that auto rotates the cube from 80 percent of scroll
+			animationScripts.push({
+				start: 80,
+				end: 90,
+				func: () => {
+					//auto rotate
+					// cube.rotation.x += 0.01
+					// cube.rotation.y += 0.01
+					if ( object1 !== undefined) {
+						// console.log("cowboy=>", object1.position);
+						// camera.lookAt(object1.position);
+						console.log("5");
+						$(".right_section").eq(0).css('opacity', 1 - lerp(0, 1, scalePercent(80, 90)));
+					}
+				},
+			})
+
+			function playScrollAnimations() {
+				animationScripts.forEach((a) => {
+					if (scrollPercent >= a.start && scrollPercent < a.end) {
+						a.func()
+					}
+				})
+			}
 
 			init();
-			animate();
-
 			function init() {
 
 				const container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
+				boom = new THREE.Group();
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
-				camera.position.set( -2.5, 1.2, -2.5 );
+
+				boom.add(camera);
+				camera.position.set( -2.5, -1.2, -2.5 );
 
 				scene = new THREE.Scene();
 				clock = new THREE.Clock();
+
+				scene.add(boom);
 
 				new RGBELoader().load( 'royal_esplanade_1k_.hdr', function ( texture ) {
 					texture.mapping = THREE.EquirectangularReflectionMapping;
@@ -62,7 +216,7 @@
 					// model
 					const dracoLoader = new DRACOLoader();
 					dracoLoader.setDecoderPath( 'draco/' );
-					
+
 					env_loader = new GLTFLoader();
 					env_loader.setDRACOLoader( dracoLoader );
 
@@ -81,17 +235,26 @@
 						scene.add(dl);
 						// scene.add(new THREE.AmbientLight(0xffffff, 1));
 
-						// const mesh1 = new THREE.Mesh(
-						// 	new THREE.SphereGeometry(0.5),
-						// 	new THREE.MeshStandardMaterial( { color: new THREE.Color('yellow') } )
-						// );
-						// scene.add(mesh1);
+						mixer = new THREE.AnimationMixer( object );
 
-						// render();
+						gltf.animations.forEach( ( clip ) => {
+
+							mixer.clipAction( clip ).play();
+
+						} );
 
 					} );
 
-					const cowboy_loader = new GLTFLoader();					
+					title_loader = new GLTFLoader();
+					title_loader.setDRACOLoader( dracoLoader );
+					title_loader.load( './model/text.gltf', function ( gltf ) {
+						// gltf.scene.scale.set(0.5, 0.5, 0.5);
+						gltf.scene.position.setZ(35);
+						gltf.scene.position.setY(-0.3);
+						scene.add( gltf.scene );
+					} );
+
+					cowboy_loader = new GLTFLoader();
 					cowboy_loader.setDRACOLoader( dracoLoader );
 
 					cowboy_loader.load( './model/cowboyhorse.gltf', function ( gltf ) {
@@ -102,11 +265,11 @@
 
 						// render();
 
-						mixer = new THREE.AnimationMixer( object1 );
-	
+						mixer1 = new THREE.AnimationMixer( object1 );
+
 						gltf.animations.forEach( ( clip ) => {
-						
-							mixer.clipAction( clip ).play();
+
+							mixer1.clipAction( clip ).play();
 
 						} );
 
@@ -120,21 +283,26 @@
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.toneMapping = THREE.ACESFilmicToneMapping;
-				renderer.toneMappingExposure = 1;
+				// renderer.toneMapping = THREE.ACESFilmicToneMapping;
+				// renderer.toneMappingExposure = 1;
 				container.appendChild( renderer.domElement );
 
-				const controls = new OrbitControls( camera, renderer.domElement );
+				controls = new OrbitControls( camera, renderer.domElement );
 				controls.addEventListener( 'change', render ); // use if there is no animation loop
-				controls.minDistance = 8;
-				controls.maxDistance = 20;
-				controls.minPolarAngle = 0; // default
-				controls.maxPolarAngle = Math.PI / 2; // default
-				controls.target.set( 0, 2, 0 );
+				controls.minDistance = 6;
+				controls.maxDistance = 7;
+				controls.minPolarAngle = 1.2;
+				controls.maxPolarAngle = 1.3;
+				controls.target.set( 0, 1.4, 0 );
+				controls.enableZoom = false;      //Zooming
+    			// controls.autoRotate = true;
 				controls.update();
+				controls.enabled = false;
 
 				window.addEventListener( 'resize', onWindowResize );
 
+				window.scrollTo({ top: 0, behavior: 'smooth' })
+				animate();
 			}
 
 			function onWindowResize() {
@@ -148,26 +316,53 @@
 
 			}
 
+			/* Liner Interpolation
+			* lerp(min, max, ratio)
+			* eg,
+			* lerp(20, 60, .5)) = 40
+			* lerp(-20, 60, .5)) = 20
+			* lerp(20, 60, .75)) = 50
+			* lerp(-20, -10, .1)) = -.19
+			*/
+			function lerp(x, y, a) {
+				return (1 - a) * x + a * y;
+			}
+
+			// Used to fit the lerps to start and end at specific scrolling percentages
+			function scalePercent(start, end) {
+				return (scrollPercent - start) / (end - start);
+			}
+
+			document.body.onscroll = () => {
+				//calculate the current scroll progress as a percentage
+				scrollPercent =
+					((document.documentElement.scrollTop || document.body.scrollTop) /
+						((document.documentElement.scrollHeight ||
+							document.body.scrollHeight) -
+							document.documentElement.clientHeight)) *
+					100
+				;
+			}
+
 			function animate() {
-				
 				requestAnimationFrame( animate );
 
-				posZ -= 0.2;
-				if ( posZ < -40 )
-					posZ = 80;
+				playScrollAnimations()
 
-				if ( object !== undefined && object.position !== undefined )
-					object.position.setZ(posZ);
-				
+				// posZ -= 0.2;
+				// if ( posZ < -40 )
+				// 	posZ = 80;
+
+				// if ( object !== undefined && object.position !== undefined )
+				// 	object.position.setZ(posZ);
+
 				var delta = clock.getDelta();
-				
 				if ( mixer ) mixer.update( delta );
+				if ( mixer1 ) mixer1.update( delta );
 
 				render();
 
 			}
-
-			//
 
 			function render() {
 

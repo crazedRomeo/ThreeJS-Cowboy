@@ -98,14 +98,7 @@
 				start: 0,
 				end: 20,
 				func: () => {
-					// camera.lookAt(cube.position)
-					//camera.position.set(0, 1, 2)
-					// cube.position.z = lerp(-10, 0, scalePercent(0, 40))
-					//console.log(cube.position.z)
 					if ( object1 !== undefined) {
-						// console.log("cowboy=>", object1.position);
-						// camera.lookAt(object1.position);
-						console.log("1");
 					}
 				},
 			})
@@ -115,14 +108,7 @@
 				start: 20,
 				end: 30,
 				func: () => {
-					// camera.lookAt(cube.position)
-					//camera.position.set(0, 1, 2)
-					// cube.rotation.z = lerp(0, Math.PI, scalePercent(40, 60))
-					//console.log(cube.rotation.z)
 					if ( object1 !== undefined) {
-						// console.log("cowboy=>", object1.position);
-						// camera.lookAt(object1.position);
-						console.log("2");
 						$(".left_section").eq(0).css('opacity', 1 - lerp(0, 1, scalePercent(20, 30)));
 					}
 				},
@@ -133,14 +119,7 @@
 				start: 40,
 				end: 50,
 				func: () => {
-					// camera.position.x = lerp(0, 5, scalePercent(60, 80))
-					// camera.position.y = lerp(1, 5, scalePercent(60, 80))
-					// camera.lookAt(cube.position)
-					//console.log(camera.position.x + " " + camera.position.y)
 					if ( object1 !== undefined) {
-						// console.log("cowboy=>", object1.position);
-						// camera.lookAt(object1.position);
-						console.log("3");
 						$(".left_section").eq(1).css('opacity', 1 - lerp(0, 1, scalePercent(40, 50)));
 					}
 				},
@@ -151,13 +130,7 @@
 				start: 60,
 				end: 70,
 				func: () => {
-					//auto rotate
-					// cube.rotation.x += 0.01
-					// cube.rotation.y += 0.01
 					if ( object1 !== undefined) {
-						// console.log("cowboy=>", object1.position);
-						// camera.lookAt(object1.position);
-						console.log("4");
 						$(".left_section").eq(2).css('opacity', 1 - lerp(0, 1, scalePercent(60, 70)));
 					}
 				},
@@ -168,13 +141,7 @@
 				start: 80,
 				end: 90,
 				func: () => {
-					//auto rotate
-					// cube.rotation.x += 0.01
-					// cube.rotation.y += 0.01
 					if ( object1 !== undefined) {
-						// console.log("cowboy=>", object1.position);
-						// camera.lookAt(object1.position);
-						console.log("5");
 						$(".right_section").eq(0).css('opacity', 1 - lerp(0, 1, scalePercent(80, 90)));
 					}
 				},
@@ -198,14 +165,14 @@
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 				boom.add(camera);
-				camera.position.set( -2.5, -1.2, -2.5 );
+				camera.position.set( -1.5, -1.2, -2.5 );
 
 				scene = new THREE.Scene();
 				clock = new THREE.Clock();
 
 				scene.add(boom);
 
-				new RGBELoader().load( 'royal_esplanade_1k_.hdr', function ( texture ) {
+				new RGBELoader().load( 'royal_esplanade_2k_.hdr', function ( texture ) {
 					texture.mapping = THREE.EquirectangularReflectionMapping;
 
 					scene.background = texture;
@@ -230,12 +197,13 @@
 						// scene.add( al );
 						// var light = new THREE.HemisphereLight(0xffffff, 0x0000ff, 1);
 						// scene.add( light );
-						const dl = new THREE.DirectionalLight(0xffffff, 2.5);
-						dl.position.set(25, 50, -25);
-						scene.add(dl);
+						// const dl = new THREE.DirectionalLight(0xffAAAA, 2.5);
+						// dl.position.set(25, 50, 25);
+						// scene.add(dl);
 						// scene.add(new THREE.AmbientLight(0xffffff, 1));
 
 						mixer = new THREE.AnimationMixer( object );
+						mixer.timeScale = 0.05 ;
 
 						gltf.animations.forEach( ( clip ) => {
 
@@ -283,17 +251,20 @@
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				// renderer.toneMapping = THREE.ACESFilmicToneMapping;
-				// renderer.toneMappingExposure = 1;
+				renderer.toneMapping = THREE.ACESFilmicToneMapping;
+				// renderer.toneMapping = THREE.LinearToneMapping;
+				renderer.toneMappingExposure = 1;
+				// renderer.backgroundBlurriness = 1;
+				// renderer.backgroundIntensity = 1;
 				container.appendChild( renderer.domElement );
 
 				controls = new OrbitControls( camera, renderer.domElement );
 				controls.addEventListener( 'change', render ); // use if there is no animation loop
 				controls.minDistance = 6;
 				controls.maxDistance = 7;
-				controls.minPolarAngle = 1.2;
-				controls.maxPolarAngle = 1.3;
-				controls.target.set( 0, 1.4, 0 );
+				controls.minPolarAngle = 1.3;
+				controls.maxPolarAngle = 1.4;
+				controls.target.set( 0, 1.9, 0 );
 				controls.enableZoom = false;      //Zooming
     			// controls.autoRotate = true;
 				controls.update();

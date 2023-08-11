@@ -197,6 +197,9 @@
 				boom.add(camera);
 				camera.position.set( -1.5, -1.2, -2.5 );
 
+				const al = new THREE.AmbientLight(0xffffff, 0.7);
+				boom.add( al );
+
 				scene = new THREE.Scene();
 				clock = new THREE.Clock();
 
@@ -225,14 +228,48 @@
 
 						scene.add( object );
 
-						// const al = new THREE.AmbientLight(0xffffff, 0.7);
+						// const al = new THREE.AmbientLight(0xffffff, 1);
 						// scene.add( al );
 						// var light = new THREE.HemisphereLight(0xffffff, 0x0000ff, 1);
 						// scene.add( light );
-						// const dl = new THREE.DirectionalLight(0xffAAAA, 2.5);
-						// dl.position.set(25, 50, 25);
+						// const dl = new THREE.DirectionalLight(0xffffff, 1);
+						// dl.position.set(-250, -300, -25);
 						// scene.add(dl);
-						// scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+						// const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
+						// hemiLight.color.setHSL( 0.6, 1, 0.6 );
+						// hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+						// hemiLight.position.set( 0, 50, 0 );
+						// scene.add( hemiLight );
+
+						// const hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
+						// scene.add( hemiLightHelper );
+
+						const dirLight = new THREE.DirectionalLight( 0xffffff, 10 );
+						dirLight.color.setHSL( 0.1, 1, 0.95 );
+						dirLight.position.set( 2, 2, 0 );
+						dirLight.position.multiplyScalar( 10 );
+						dirLight.target.position.set(20, 0, 0);
+						scene.add( dirLight );
+
+						// dirLight.castShadow = true;
+
+						// dirLight.shadow.mapSize.width = 2048;
+						// dirLight.shadow.mapSize.height = 2048;
+
+						// const d = 50;
+
+						// dirLight.shadow.camera.left = - d;
+						// dirLight.shadow.camera.right = d;
+						// dirLight.shadow.camera.top = d;
+						// dirLight.shadow.camera.bottom = - d;
+
+						// dirLight.shadow.camera.far = 500;
+						// dirLight.shadow.bias = - 0.0001;
+
+						const dirLightHelper = new THREE.DirectionalLightHelper( dirLight, 10 );
+						scene.add( dirLightHelper );
+
 						// console.log(object);
 						// console.log(gltf.animations);
 						mixer = new THREE.AnimationMixer( object );
@@ -294,7 +331,15 @@
 				renderer.toneMappingExposure = 1;
 				// renderer.backgroundBlurriness = 1;
 				// renderer.backgroundIntensity = 1;
+				// renderer.outputEncoding = THREE.sRGBEncoding;
+				// renderer.gammaInput = true;
+        		// renderer.gammaOutput = true;
 				container.appendChild( renderer.domElement );
+
+				// const environment = new RoomEnvironment( renderer );
+				// const pmremGenerator = new THREE.PMREMGenerator( renderer );
+				// scene.background = new THREE.Color( 0xbbbbbb );
+				// scene.environment = pmremGenerator.fromScene( environment ).texture;
 
 				controls = new OrbitControls( camera, renderer.domElement );
 				controls.addEventListener( 'change', render ); // use if there is no animation loop
@@ -305,6 +350,7 @@
 				controls.target.set( 0, 1.9, 0 );
 				controls.enableZoom = false;      //Zooming
     			// controls.autoRotate = true;
+				// controls.enableDamping = true;
 				controls.update();
 				controls.enabled = false;
 

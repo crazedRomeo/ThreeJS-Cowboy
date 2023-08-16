@@ -253,8 +253,8 @@
 
 						const dirLight = new THREE.DirectionalLight( 'yellow', 5 );
 						dirLight.color.setHSL( 0.6, 0.6, 1.3 );
-						dirLight.position.set( 0, 19, 0 );
-						dirLight.position.multiplyScalar( 30 );
+						dirLight.position.set( 0, 14, 0 );
+						dirLight.position.multiplyScalar( 20 );
 						dirLight.target.position.set(0, 0, 0);
 						scene.add( dirLight );
 
@@ -336,24 +336,29 @@
 					smokeMaterial = new THREE.MeshLambertMaterial({
 						map: texture,
 						transparent: true,
-						side : THREE.DoubleSide
+						side : THREE.BackSide,
+						// wireframe: true
 					});
 
 					for (let p = 0, l = 5; p < l; p++) {
-						console.log(Math.random() * 300 % 5 * 200);
+						// console.log(Math.random() * 300 % 5 * 200);
 						let particle = new THREE.Mesh(smokeGeo, smokeMaterial);
-						particle.receiveShadow = true;
-						particle.castShadow = true;
+						// particle.receiveShadow = true;
+						// particle.castShadow = true;
+						particle.frustumCulled = false;
 						particle.position.set(
-							-100,
+							-100 - (Math.random() * 300 % 5) * 10,
 							15 + (Math.random() * 300 % 5),
-							(Math.random() * 300 % 5) * 200,
+							(Math.random() * 300 % 5) * 200
 						);
 
 						particle.rotation.x = -Math.PI / 2;
 						scene.add(particle);
 						smokeParticles.push(particle);
 					}
+
+					const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+					scene.add(ambientLight);
 
 					animate();
 				});
@@ -391,7 +396,7 @@
     			// controls.autoRotate = true;
 				// controls.enableDamping = true;
 				controls.update();
-				// controls.enabled = false;
+				controls.enabled = false;
 
 				window.addEventListener( 'resize', onWindowResize );
 
@@ -458,10 +463,10 @@
 
 				[].forEach.call(smokeParticles, sp => {
 					// sp.rotation.z += delta * 0.2;
-					sp.position.z -= delta * 5;
+					sp.position.z -= delta * 10;
 
 					if ( sp.position.z < -300 ) {
-						console.log(Math.random() * 300 % 5 * 200);
+						// console.log(Math.random() * 300 % 5 * 200);
 						sp.position.z = (Math.random() * 300 % 5) * 200;
 					}
 				});

@@ -79,7 +79,11 @@
 				</p>
 			</section>
 		</main>
-
+		<!-- <div class='clouds'>
+			<div class='clouds-1'></div>
+			<div class='clouds-2'></div>
+			<div class='clouds-3'></div>
+		</div> -->
 		<!-- Import maps polyfill -->
 		<!-- Remove this when import maps will be widely supported -->
 		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
@@ -104,6 +108,7 @@
 
 			var controls, boom;
 			var camera, scene, renderer, mixer, mixer1, clock, env_loader, cowboy_loader, title_loader;
+			let smokeMaterial, smokeParticles = [];
 			var posZ = 90;
 			var object, object1;
 			let scrollPercent = 0;
@@ -205,7 +210,7 @@
 
 				scene.add(boom);
 
-				new RGBELoader().load( 'royal_esplanade_1k.hdr', function ( texture ) {
+				new RGBELoader().load( 'royal_esplanade_2k.hdr', function ( texture ) {
 					texture.mapping = THREE.EquirectangularReflectionMapping;
 
 					scene.background = texture;
@@ -248,7 +253,7 @@
 
 						const dirLight = new THREE.DirectionalLight( 'yellow', 5 );
 						dirLight.color.setHSL( 0.6, 0.6, 1.3 );
-						dirLight.position.set( 0, 30, 0 );
+						dirLight.position.set( 0, 19, 0 );
 						dirLight.position.multiplyScalar( 30 );
 						dirLight.target.position.set(0, 0, 0);
 						scene.add( dirLight );
@@ -321,6 +326,38 @@
 
 				} );
 
+				const loader = new THREE.TextureLoader();
+
+				loader.crossOrigin = '';
+
+				loader.load('./blue-smoke2.png', function onLoad(texture) {
+					const smokeGeo = new THREE.PlaneGeometry(600, 600);
+
+					smokeMaterial = new THREE.MeshLambertMaterial({
+						map: texture,
+						transparent: true,
+						side : THREE.DoubleSide
+					});
+
+					for (let p = 0, l = 5; p < l; p++) {
+						console.log(Math.random() * 300 % 5 * 200);
+						let particle = new THREE.Mesh(smokeGeo, smokeMaterial);
+						particle.receiveShadow = true;
+						particle.castShadow = true;
+						particle.position.set(
+							-100,
+							15 + (Math.random() * 300 % 5),
+							(Math.random() * 300 % 5) * 200,
+						);
+
+						particle.rotation.x = -Math.PI / 2;
+						scene.add(particle);
+						smokeParticles.push(particle);
+					}
+
+					animate();
+				});
+
 				// const al = new THREE.AmbientLight(0x00000000, 1);
 				// scene.add( al );
 
@@ -335,7 +372,7 @@
 				// renderer.backgroundIntensity = 1;
 				renderer.outputEncoding = THREE.sRGBEncoding;
 				// renderer.gammaInput = true;
-        		renderer.gammaOutput = true;
+        		// renderer.gammaOutput = true;
 				container.appendChild( renderer.domElement );
 
 				// const environment = new RoomEnvironment( renderer );
@@ -354,7 +391,7 @@
     			// controls.autoRotate = true;
 				// controls.enableDamping = true;
 				controls.update();
-				controls.enabled = false;
+				// controls.enabled = false;
 
 				window.addEventListener( 'resize', onWindowResize );
 
@@ -418,6 +455,16 @@
 				if ( mixer1 ) mixer1.update( delta );
 
 				render();
+
+				[].forEach.call(smokeParticles, sp => {
+					// sp.rotation.z += delta * 0.2;
+					sp.position.z -= delta * 5;
+
+					if ( sp.position.z < -300 ) {
+						console.log(Math.random() * 300 % 5 * 200);
+						sp.position.z = (Math.random() * 300 % 5) * 200;
+					}
+				});
 
 			}
 

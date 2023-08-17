@@ -340,7 +340,7 @@
 						// wireframe: true
 					});
 
-					for (let p = 0, l = 5; p < l; p++) {
+					for (let p = 0, l = 2; p < l; p++) {
 						// console.log(Math.random() * 300 % 5 * 200);
 						let particle = new THREE.Mesh(smokeGeo, smokeMaterial);
 						// particle.receiveShadow = true;
@@ -349,7 +349,7 @@
 						particle.position.set(
 							-100 - (Math.random() * 300 % 5) * 10,
 							15 + (Math.random() * 300 % 5),
-							(Math.random() * 300 % 5) * 200
+							600 * p
 						);
 
 						particle.rotation.x = -Math.PI / 2;
@@ -465,9 +465,9 @@
 					// sp.rotation.z += delta * 0.2;
 					sp.position.z -= delta * 10;
 
-					if ( sp.position.z < -300 ) {
+					if ( sp.position.z < -600 ) {
 						// console.log(Math.random() * 300 % 5 * 200);
-						sp.position.z = (Math.random() * 300 % 5) * 200;
+						sp.position.z = 600;
 					}
 				});
 

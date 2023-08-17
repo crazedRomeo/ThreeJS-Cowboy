@@ -212,7 +212,7 @@
 				// scene.fog = new THREE.FogExp2( 0xffffff, 0.2 );
 				// scene.fog = new THREE.Fog( 0xffffff, 0.015, 50 );
 
-				new RGBELoader().load( 'royal_esplanade_2k.hdr', function ( texture ) {
+				new RGBELoader().load( './model/royal_esplanade_2k.hdr', function ( texture ) {
 					texture.mapping = THREE.EquirectangularReflectionMapping;
 
 					scene.background = texture;

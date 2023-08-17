@@ -209,8 +209,9 @@
 				clock = new THREE.Clock();
 
 				scene.add(boom);
-				// scene.fog = new THREE.FogExp2( 0xffffff, 0.2 );
-				// scene.fog = new THREE.Fog( 0xffffff, 0.015, 50 );
+				// scene.fog = new THREE.FogExp2( 0xffffff, 50 );
+				// scene.fog = new THREE.Fog( 0xe17947, 0.015, 200 );
+				// scene.fog = new THREE.Fog( 0xffffff, 0, 250 );
 
 				new RGBELoader().load( './model/royal_esplanade_2k.hdr', function ( texture ) {
 					texture.mapping = THREE.EquirectangularReflectionMapping;
@@ -233,6 +234,7 @@
 						$('.wrapper').addClass('hide');
 
 						object = gltf.scene;
+						object.fog = true;
 
 						scene.add( object );
 
@@ -365,73 +367,73 @@
 					animate();
 				});
 
-				loader.load('./model/fog.png', function onLoad(texture) {
-					const fogGeo = new THREE.PlaneGeometry(10, 5);
+				// loader.load('./model/fog.png', function onLoad(texture) {
+				// 	const fogGeo = new THREE.PlaneGeometry(10, 5);
 
-					fogMaterial = new THREE.MeshLambertMaterial({
-						map: texture,
-						transparent: true,
-						side : THREE.BackSide,
-						opacity : 0.7,
-						// wireframe: true
-					});
+				// 	fogMaterial = new THREE.MeshLambertMaterial({
+				// 		map: texture,
+				// 		transparent: true,
+				// 		side : THREE.BackSide,
+				// 		opacity : 0.7,
+				// 		// wireframe: true
+				// 	});
 
-					let particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.frustumCulled = false;
-					particle.position.set( 55, 2.5, 10 );
-					particle.rotation.y = Math.PI / 2;
-					scene.add(particle);
+				// 	let particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.frustumCulled = false;
+				// 	particle.position.set( 55, 2.5, 10 );
+				// 	particle.rotation.y = Math.PI / 2;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( 42, 2.1, 25 );
-					particle.rotation.y = Math.PI / 2;
-					scene.add(particle);
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( 42, 2.1, 25 );
+				// 	particle.rotation.y = Math.PI / 2;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( 42, 2.5, 17 );
-					particle.rotation.y = Math.PI / 2;
-					scene.add(particle);
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( 42, 2.5, 17 );
+				// 	particle.rotation.y = Math.PI / 2;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( 22, 2.1, -22 );
-					particle.rotation.y = Math.PI / 2;
-					scene.add(particle);
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( 22, 2.1, -22 );
+				// 	particle.rotation.y = Math.PI / 2;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( 43, 3.5, -52 );
-					particle.rotation.y = Math.PI / 2;
-					scene.add(particle);
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( 43, 3.5, -52 );
+				// 	particle.rotation.y = Math.PI / 2;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( 43, 3.5, -60 );
-					particle.rotation.y = Math.PI / 2;
-					scene.add(particle);
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( 43, 3.5, -60 );
+				// 	particle.rotation.y = Math.PI / 2;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( 43, 4, -68 );
-					particle.rotation.y = Math.PI / 2;
-					scene.add(particle);
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( 43, 4, -68 );
+				// 	particle.rotation.y = Math.PI / 2;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( -35, 2.2, 21 );
-					particle.rotation.y = -Math.PI / 2;
-					scene.add(particle);
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( -35, 2.2, 21 );
+				// 	particle.rotation.y = -Math.PI / 2;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( -40, 2.5, 15 );
-					particle.rotation.y = -Math.PI / 2;
-					scene.add(particle);
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( -40, 2.5, 15 );
+				// 	particle.rotation.y = -Math.PI / 2;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( -27, 2.2, -35 );
-					particle.rotation.y = -Math.PI / 2 - 0.6;
-					scene.add(particle);
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( -27, 2.2, -35 );
+				// 	particle.rotation.y = -Math.PI / 2 - 0.6;
+				// 	scene.add(particle);
 
-					particle = new THREE.Mesh(fogGeo, fogMaterial);
-					particle.position.set( -24, 1.3, -42 );
-					particle.rotation.y = -Math.PI / 2 - 0.6;
-					scene.add(particle);
-				});
+				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
+				// 	particle.position.set( -24, 1.3, -42 );
+				// 	particle.rotation.y = -Math.PI / 2 - 0.6;
+				// 	scene.add(particle);
+				// });
 				// const al = new THREE.AmbientLight(0x00000000, 1);
 				// scene.add( al );
 

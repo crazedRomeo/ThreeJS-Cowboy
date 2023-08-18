@@ -79,13 +79,6 @@
 				</p>
 			</section>
 		</main>
-		<!-- <div class='clouds'>
-			<div class='clouds-1'></div>
-			<div class='clouds-2'></div>
-			<div class='clouds-3'></div>
-		</div> -->
-		<!-- Import maps polyfill -->
-		<!-- Remove this when import maps will be widely supported -->
 		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
 		<script src="./js/jquery-3.7.0.min.js"></script>
 
@@ -109,7 +102,6 @@
 			var controls, boom;
 			var camera, scene, renderer, mixer, mixer1, clock, env_loader, cowboy_loader, title_loader;
 			let smokeMaterial, smokeParticles = [], fogMaterial;
-			var posZ = 90;
 			var object, object1;
 			let scrollPercent = 0;
 
@@ -209,93 +201,62 @@
 				clock = new THREE.Clock();
 
 				scene.add(boom);
-				// scene.fog = new THREE.FogExp2( 0xffffff, 50 );
-				// scene.fog = new THREE.Fog( 0xe17947, 0.015, 200 );
 				scene.fog = new THREE.Fog( 0xffffff, 0, 250 );
 
 				new RGBELoader().load( './model/royal_esplanade_2k.hdr', function ( texture ) {
 					texture.mapping = THREE.EquirectangularReflectionMapping;
 
 					scene.background = texture;
-					// scene.environment = texture;
 					scene.environment = null;
 
-					// render();
-
-					// model
 					const dracoLoader = new DRACOLoader();
 					dracoLoader.setDecoderPath( 'draco/' );
 
 					env_loader = new GLTFLoader();
 					env_loader.setDRACOLoader( dracoLoader );
 
-					env_loader.load( './model/env.gltf', function ( gltf ) {
-						container.style.display = "block";
-						$('.wrapper').addClass('hide');
-
+					env_loader.load( './model/env.glb', function ( gltf ) {
 						object = gltf.scene;
 						object.fog = true;
 
 						scene.add( object );
 
-						// const al = new THREE.AmbientLight(0xffffff, 4);
-						// scene.add( al );
-						// var light = new THREE.HemisphereLight(0xffffff, 0x0000ff, 1);
-						// scene.add( light );
-						// const dl = new THREE.DirectionalLight(0xffffff, 1);
-						// dl.position.set(-250, -300, -25);
-						// scene.add(dl);
+						gltf.scene.traverse( function( node ) {
+							if ( node.name == "LandscapeRoad" ) { console.log(node); node.receiveShadow = true; }
+						} );
 
-						// const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
-						// hemiLight.color.setHSL( 5, 1, 0.6 );
-						// hemiLight.groundColor.setHSL( 5, 1, 1 );
-						// hemiLight.position.set( 0, 0, 0 );
-						// scene.add( hemiLight );
-
-						// const hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
-						// scene.add( hemiLightHelper );
-
-						const dirLight = new THREE.DirectionalLight( 'yellow', 5 );
+						const dirLight = new THREE.DirectionalLight( 'white', 5 );
 						dirLight.color.setHSL( 0.6, 0.6, 1.3 );
-						dirLight.position.set( 0, 14, 0 );
+						dirLight.position.set( 5, 14, 5 );
 						dirLight.position.multiplyScalar( 20 );
 						dirLight.target.position.set(0, 0, 0);
+						dirLight.castShadow = true;
 						scene.add( dirLight );
 
-						// dirLight.castShadow = true;
-
-						// dirLight.shadow.mapSize.width = 2048;
-						// dirLight.shadow.mapSize.height = 2048;
-
-						// const d = 50;
-
-						// dirLight.shadow.camera.left = - d;
-						// dirLight.shadow.camera.right = d;
-						// dirLight.shadow.camera.top = d;
-						// dirLight.shadow.camera.bottom = - d;
-
-						// dirLight.shadow.camera.far = 500;
-						// dirLight.shadow.bias = - 0.0001;
-
-						// const dirLightHelper = new THREE.DirectionalLightHelper( dirLight, 10 );
-						// scene.add( dirLightHelper );
-
-						// console.log(object);
-						// console.log(gltf.animations);
 						mixer = new THREE.AnimationMixer( object );
-						mixer.clipAction( gltf.animations[1] ).play();
+						mixer.timeScale = 0.1;
 
-						// gltf.animations[1].forEach( ( clip ) => {
-						// 	mixer.clipAction( clip ).play();
-						// } );
+						gltf.animations.forEach( ( clip ) => {
+							mixer.clipAction( clip ).play();
+						} );
 
-						mixer1 = new THREE.AnimationMixer( object );
-						mixer1.timeScale = 0.05 ;
-						mixer1.clipAction( gltf.animations[4] ).play();
+						cowboy_loader.load( './model/cowboy.glb', function ( gltf ) {
+							container.style.display = "block";
+							$('.wrapper').addClass('hide');
 
-						// gltf.animations[4].forEach( ( clip ) => {
-						// 	mixer.clipAction( clip ).play();
-						// } );
+							object1 = gltf.scene;
+							scene.add( object1 );
+
+							gltf.scene.traverse( function( node ) {
+								if ( node.isMesh == true ) node.castShadow = true;
+							} );
+
+							mixer1 = new THREE.AnimationMixer( object1 );
+							gltf.animations.forEach( ( clip ) => {
+								mixer1.clipAction( clip ).play();
+							} );
+						} );
+						
 					} );
 
 					title_loader = new GLTFLoader();
@@ -307,33 +268,12 @@
 						scene.add( gltf.scene );
 					} );
 
-					// cowboy_loader = new GLTFLoader();
-					// cowboy_loader.setDRACOLoader( dracoLoader );
-
-					// cowboy_loader.load( './model/cowboyhorse.gltf', function ( gltf ) {
-
-					// 	object1 = gltf.scene;
-
-					// 	scene.add( object1 );
-
-					// 	// render();
-
-					// 	mixer1 = new THREE.AnimationMixer( object1 );
-
-					// 	gltf.animations.forEach( ( clip ) => {
-
-					// 		mixer1.clipAction( clip ).play();
-
-					// 	} );
-
-					// } );
-
+					cowboy_loader = new GLTFLoader();
+					cowboy_loader.setDRACOLoader( dracoLoader );
 				} );
 
 				const loader = new THREE.TextureLoader();
-
 				loader.crossOrigin = '';
-
 				loader.load('./model/blue-smoke3.png', function onLoad(texture) {
 					const smokeGeo = new THREE.PlaneGeometry(600, 600);
 
@@ -367,94 +307,14 @@
 					animate();
 				});
 
-				// loader.load('./model/fog.png', function onLoad(texture) {
-				// 	const fogGeo = new THREE.PlaneGeometry(10, 5);
-
-				// 	fogMaterial = new THREE.MeshLambertMaterial({
-				// 		map: texture,
-				// 		transparent: true,
-				// 		side : THREE.BackSide,
-				// 		opacity : 0.7,
-				// 		// wireframe: true
-				// 	});
-
-				// 	let particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.frustumCulled = false;
-				// 	particle.position.set( 55, 2.5, 10 );
-				// 	particle.rotation.y = Math.PI / 2;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( 42, 2.1, 25 );
-				// 	particle.rotation.y = Math.PI / 2;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( 42, 2.5, 17 );
-				// 	particle.rotation.y = Math.PI / 2;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( 22, 2.1, -22 );
-				// 	particle.rotation.y = Math.PI / 2;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( 43, 3.5, -52 );
-				// 	particle.rotation.y = Math.PI / 2;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( 43, 3.5, -60 );
-				// 	particle.rotation.y = Math.PI / 2;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( 43, 4, -68 );
-				// 	particle.rotation.y = Math.PI / 2;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( -35, 2.2, 21 );
-				// 	particle.rotation.y = -Math.PI / 2;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( -40, 2.5, 15 );
-				// 	particle.rotation.y = -Math.PI / 2;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( -27, 2.2, -35 );
-				// 	particle.rotation.y = -Math.PI / 2 - 0.6;
-				// 	scene.add(particle);
-
-				// 	particle = new THREE.Mesh(fogGeo, fogMaterial);
-				// 	particle.position.set( -24, 1.3, -42 );
-				// 	particle.rotation.y = -Math.PI / 2 - 0.6;
-				// 	scene.add(particle);
-				// });
-				// const al = new THREE.AmbientLight(0x00000000, 1);
-				// scene.add( al );
-
 				renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				// renderer.setClearColor( 0x000000, 0 );
-				// renderer.toneMapping = THREE.ACESFilmicToneMapping;
 				renderer.toneMapping = THREE.LinearToneMapping;
 				renderer.toneMappingExposure = 1;
-				// renderer.backgroundBlurriness = 1;
-				// renderer.backgroundIntensity = 1;
-				renderer.outputEncoding = THREE.sRGBEncoding;
-				// renderer.gammaInput = true;
-        		// renderer.gammaOutput = true;
+				renderer.shadowMap.enabled = true;
+				renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 				container.appendChild( renderer.domElement );
-
-				// const environment = new RoomEnvironment( renderer );
-				// const pmremGenerator = new THREE.PMREMGenerator( renderer );
-				// scene.background = new THREE.Color( 0xbbbbbb );
-				// scene.environment = pmremGenerator.fromScene( environment ).texture;
 
 				controls = new OrbitControls( camera, renderer.domElement );
 				controls.addEventListener( 'change', render ); // use if there is no animation loop
@@ -464,8 +324,6 @@
 				controls.maxPolarAngle = 1.4;
 				controls.target.set( 0, 1.9, 0 );
 				controls.enableZoom = false;      //Zooming
-    			// controls.autoRotate = true;
-				// controls.enableDamping = true;
 				controls.update();
 				controls.enabled = false;
 
@@ -519,13 +377,6 @@
 
 				playScrollAnimations()
 
-				// posZ -= 0.2;
-				// if ( posZ < -40 )
-				// 	posZ = 80;
-
-				// if ( object !== undefined && object.position !== undefined )
-				// 	object.position.setZ(posZ);
-
 				var delta = clock.getDelta();
 				if ( mixer ) mixer.update( delta );
 				if ( mixer1 ) mixer1.update( delta );
@@ -533,11 +384,9 @@
 				render();
 
 				[].forEach.call(smokeParticles, sp => {
-					// sp.rotation.z += delta * 0.2;
 					sp.position.z -= delta * 10;
 
 					if ( sp.position.z < -600 ) {
-						// console.log(Math.random() * 300 % 5 * 200);
 						sp.position.z = 600;
 					}
 				});

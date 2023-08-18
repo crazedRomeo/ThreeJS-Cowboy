@@ -211,7 +211,7 @@
 				scene.add(boom);
 				// scene.fog = new THREE.FogExp2( 0xffffff, 50 );
 				// scene.fog = new THREE.Fog( 0xe17947, 0.015, 200 );
-				// scene.fog = new THREE.Fog( 0xffffff, 0, 250 );
+				scene.fog = new THREE.Fog( 0xffffff, 0, 250 );
 
 				new RGBELoader().load( './model/royal_esplanade_2k.hdr', function ( texture ) {
 					texture.mapping = THREE.EquirectangularReflectionMapping;
